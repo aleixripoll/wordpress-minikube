@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+#kind: StatefulSet
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  # required by statefulset
+  #serviceName: redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis
+          ports:
+            - containerPort: 6379
+              # required by statefulset
+              #name: redis-service
+          volumeMounts:
+            - name: redis-volume
+              mountPath: /data
+      volumes:
+        - name: redis-volume
+          persistentVolumeClaim:
+            claimName: redis-volume-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  ports:
+    - port: 6379
+  # required by statefulset
+  #clusterIP: None
+  selector:
+    app: redis

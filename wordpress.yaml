@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: mysql-service
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: rootpw
+        - name: WORDPRESS_CONFIG_EXTRA
+          value: |
+            define('WP_REDIS_HOST', 'redis-service');
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nfs-volume
+          mountPath: /var/www/html
+      volumes:
+      - name: nfs-volume
+        persistentVolumeClaim:
+          claimName: nfs-volume-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-service
+spec:
+  type: ClusterIP
+  #type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: wordpress
