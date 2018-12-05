@@ -13,7 +13,7 @@ Wordpress setup in a minikube Kubernetes cluster using the folowing components:
 
 # Setup 
 
-```bash
+```console
 
 $ kubectl create secret generic mysql-secrets --from-literal=rootpw=secretpw
 secret "mysql-secrets" created
