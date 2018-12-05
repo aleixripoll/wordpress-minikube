@@ -13,6 +13,8 @@ Wordpress setup in a minikube Kubernetes cluster using the folowing components:
 
 # Setup 
 
+```bash
+
 $ kubectl create secret generic mysql-secrets --from-literal=rootpw=secretpw
 secret "mysql-secrets" created
 
@@ -115,7 +117,5 @@ Vary: Accept-Encoding
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<title>WordPress &rsaquo; Installation</title>
-    ...
-
-
-
+	...
+```
